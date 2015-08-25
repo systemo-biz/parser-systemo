@@ -2,10 +2,10 @@
 /*
 Plugin Name: Parser by Systemo
 Version: 0.1
-Plugin URI: ${TM_PLUGIN_BASE}
-Description:
+Plugin URI: https://github.com/systemo-biz/parser-systemo
+Description: Плагин стартер для написания простого парсера контента.
 Author: Systemo
-Author URI: ${TM_HOMEPAGE}
+Author URI: https://github.com/systemo-biz/
 */
 
 
@@ -27,7 +27,7 @@ class ParserSystemo {
       'timeout'     => 5,
     	'redirection' => 5,
     	'httpversion' => '1.0',
-    	'user-agent'  => 'WordPress/' . $wp_version . '; ' . get_bloginfo( 'url' ),
+    	'user-agent'  => 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.8; rv:20.0) Gecko/20100101 Firefox/20.0',
     	'blocking'    => true,
     	'headers'     => array(),
     	'cookies'     => array(),
