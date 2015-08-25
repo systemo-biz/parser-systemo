@@ -16,10 +16,10 @@ class ParserSystemo {
   }
 
   function parser_s_cb($attr){
-    include_once 'inc/simplehtmldom/simple_html_dom.php';
 
     extract(shortcode_atts(array(
-      'url'=> 'http://systemo.biz/blog/',
+      'url'         => 'http://systemo.biz/blog',
+      'user_agent'  => 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.8; rv:20.0) Gecko/20100101 Firefox/20.0',
     ),$atts));
 
     $args = array(
@@ -27,34 +27,45 @@ class ParserSystemo {
       'timeout'     => 5,
     	'redirection' => 5,
     	'httpversion' => '1.0',
-    	'user-agent'  => 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.8; rv:20.0) Gecko/20100101 Firefox/20.0',
+    	'user-agent'  => $user_agent,
     	'blocking'    => true,
     	'headers'     => array(),
     	'cookies'     => array(),
     	'body'        => null,
     	'compress'    => false,
     	'decompress'  => true,
-    	'sslverify'   => true,
+    	'sslverify'   => false,
     	'stream'      => false,
     	'filename'    => null
     );
 
       $result = wp_safe_remote_request( $url, $args );
 
-      $body = new simple_html_dom();
-
-      $body->load($result['body']);
-
-      $list = $body->find('#main .status-publish');
-
       ob_start();
       ?>
         <div>
+          Запрос данных по адресу:
+          <pre><?php echo $url ?></pre>
+
           <h1>Ответ</h1>
-          <?php var_dump($result['response']); ?>
+          <pre><?php var_dump($result['response']); ?></pre>
+
+          <h1>Заголовок</h1>
+          <pre><?php var_dump($result['headers']); ?></pre>
 
           <h1>Результат</h1>
+
           <ul>
+            <?php
+              //Подключаем парсер DOM дерева http://simplehtmldom.sourceforge.net/manual.htm
+              include_once 'inc/simplehtmldom/simple_html_dom.php';
+              $body = new simple_html_dom();
+              $body->load($result['body']);
+
+              //Получаем список элементов для обработку в список
+              $list = $body->find('#main .status-publish');
+            ?>
+
             <?php foreach($list as $element): ?>
                 <li>
                   <?php
