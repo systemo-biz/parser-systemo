@@ -9,6 +9,7 @@ Author URI: https://github.com/systemo-biz/
 */
 
 
+
 class ParserSystemo {
 
   function __construct(){
@@ -18,7 +19,7 @@ class ParserSystemo {
   function parser_s_cb($attr){
 
     extract(shortcode_atts(array(
-      'url'         => 'http://systemo.biz/blog',
+      'url'         => 'https://m.avito.ru/tyumen/kommercheskaya_nedvizhimost',
       'user_agent'  => 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.8; rv:20.0) Gecko/20100101 Firefox/20.0',
     ),$atts));
 
@@ -39,6 +40,12 @@ class ParserSystemo {
     	'filename'    => null
     );
 
+
+    // Указываем прокси, если сайт блокирует доступ
+    define( 'WP_PROXY_HOST', '188.127.237.141' );
+    define( 'WP_PROXY_PORT', '1890' );
+
+
       $result = wp_safe_remote_request( $url, $args );
 
       ob_start();
@@ -51,7 +58,7 @@ class ParserSystemo {
           <pre><?php var_dump($result['response']); ?></pre>
 
           <h1>Заголовок</h1>
-          <pre><?php var_dump($result['headers']); ?></pre>
+          <pre><?php var_dump(wp_remote_retrieve_headers( $result )); ?></pre>
 
           <h1>Результат</h1>
 
@@ -63,20 +70,20 @@ class ParserSystemo {
               $body->load($result['body']);
 
               //Получаем список элементов для обработку в список
-              $list = $body->find('#main .status-publish');
+              $list = $body->find('.b-content-main .b-item');
             ?>
 
             <?php foreach($list as $element): ?>
                 <li>
                   <?php
                     //получаем ИД атрибут элемента
-                    $id = $element->id;
-                    echo $id;
+                    //$id = $element->id;
+                    //echo $id;
                   ?>
                   <br/>
                   <?php
                     //Находим внутри элемента заголовок с ссылкой и выдергиваем текст ссылки
-                    $title = $element->find('h1.entry-title a', 0);
+                    $title = $element->find('.header-text', 0);
                     echo $title->plaintext;
                   ?>
                   <br/>
